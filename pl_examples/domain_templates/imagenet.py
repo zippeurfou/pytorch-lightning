@@ -172,15 +172,10 @@ class ImageNetLightningModel(LightningModule):
     def add_model_specific_args(parent_parser):  # pragma: no-cover
         parser = argparse.ArgumentParser(parents=[parent_parser])
         parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet18', choices=MODEL_NAMES,
-                            help='model architecture: ' +
-                                 ' | '.join(MODEL_NAMES) +
-                                 ' (default: resnet18)')
-        parser.add_argument('--epochs', default=90, type=int, metavar='N',
-                            help='number of total epochs to run')
+                            help='model architecture: ' + ' | '.join(MODEL_NAMES) + ' (default: resnet18)')
         parser.add_argument('--seed', type=int, default=42,
                             help='seed for initializing training. ')
-        parser.add_argument('-b', '--batch-size', default=256, type=int,
-                            metavar='N',
+        parser.add_argument('-b', '--batch-size', default=256, type=int, metavar='N',
                             help='mini-batch size (default: 256), this is the total '
                                  'batch size of all GPUs on the current node when '
                                  'using Data Parallel or Distributed Data Parallel')
@@ -210,6 +205,8 @@ def get_args():
                                help='if true uses 16 bit precision')
     parent_parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
                                help='evaluate model on validation set')
+    parent_parser.add_argument('--epochs', default=90, type=int, metavar='N',
+                               help='number of total epochs to run')
 
     parser = ImageNetLightningModel.add_model_specific_args(parent_parser)
     return parser.parse_args()

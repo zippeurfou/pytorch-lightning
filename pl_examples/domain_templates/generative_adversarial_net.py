@@ -185,7 +185,7 @@ def main(hparams):
     # ------------------------
     # 2 INIT TRAINER
     # ------------------------
-    trainer = Trainer()
+    trainer = Trainer(max_epochs=hparams.epochs)
 
     # ------------------------
     # 3 START TRAINING
@@ -203,6 +203,8 @@ if __name__ == '__main__':
                         help="adam: decay of first order momentum of gradient")
     parser.add_argument("--latent_dim", type=int, default=100,
                         help="dimensionality of the latent space")
+    parser.add_argument('--epochs', default=90, type=int, metavar='N',
+                        help='number of total epochs to run')
 
     hparams = parser.parse_args()
 

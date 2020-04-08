@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 import torch
 from torch import Tensor
 
-from pytorch_lightning import _logger as log
+from pytorch_lightning import _logger as log, LightningModule
 from pytorch_lightning.callbacks import GradientAccumulationScheduler
 
 EPSILON = 1e-6
@@ -48,8 +48,8 @@ class TrainerTrainingTricksMixin(ABC):
             for p in parameters:
                 p.grad.data.mul_(torch.where(clip_coef < 1, clip_coef, torch.tensor(1., device=device)))
 
-    def print_nan_gradients(self) -> None:
-        model = self.get_model()
+    @staticmethod
+    def print_nan_gradients(model: LightningModule) -> None:
         for param in model.parameters():
             if (param.grad is not None) and torch.isnan(param.grad.float()).any():
                 log.info(param, param.grad)
@@ -65,7 +65,7 @@ class TrainerTrainingTricksMixin(ABC):
         # check if a network weight is nan
         for name, param in model.named_parameters():
             if not torch.isfinite(param).all():
-                self.print_nan_gradients()
+                self.print_nan_gradients(model)
                 raise ValueError(
                     f'Detected nan and/or inf values in `{name}`.'
                     ' Check your forward pass for numerically unstable operations.'
