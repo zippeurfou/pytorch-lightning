@@ -935,11 +935,12 @@ class LightningModule(ABC, GradInformation, ModelIO, ModelHooks):
             log.warning("MASTER_PORT environment variable is not defined. Set as 12910")
             os.environ['MASTER_PORT'] = '12910'
 
-        if 'WORLD_SIZE' in os.environ and os.environ['WORLD_SIZE'] != world_size:
-            log.warning("WORLD_SIZE environment variable is not equal to the computed "
-                        "world size. Ignored.")
+        if 'WORLD_SIZE' in os.environ and int(os.environ['WORLD_SIZE']) != world_size:
+            log.warning(f"WORLD_SIZE environment variable ({os.environ['WORLD_SIZE']}) "
+                        f"is not equal to the computed world size ({world_size}). Ignored.")
 
         torch_backend = "nccl" if self.trainer.on_gpu else "gloo"
+        log.info(f"initializing proc_rank {proc_rank} world {world_size}")
         torch_distrib.init_process_group(torch_backend, rank=proc_rank, world_size=world_size)
 
     def configure_apex(
