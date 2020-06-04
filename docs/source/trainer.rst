@@ -22,3 +22,9 @@ Trainer
         progress_bar_dict,
         init_optimizers,
         configure_schedulers
+
+
+Benchmark with vanila PyTorch
+-----------------------------
+
+TODO
