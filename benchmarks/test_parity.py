@@ -10,16 +10,16 @@ from pytorch_lightning import Trainer, seed_everything
 
 
 @pytest.mark.parametrize('cls_model,max_diff', [
-    (ParityModuleRNN, 0.05),
-    (ParityModuleMNIST, 0.5)
+    (ParityModuleRNN, 0.0),  # todo
+    (ParityModuleMNIST, 0.0),  # todo
 ])
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="test requires GPU machine")
 def test_pytorch_parity(tmpdir, cls_model, max_diff):
     """
     Verify that the same  pytorch and lightning models achieve the same results
     """
-    num_epochs = 4
-    num_rums = 3
+    num_epochs = 15  # todo
+    num_rums = 20  # todo
     lightning_outs, pl_times = lightning_loop(cls_model, num_rums, num_epochs)
     manual_outs, pt_times = vanilla_loop(cls_model, num_rums, num_epochs)
 
