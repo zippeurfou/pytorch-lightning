@@ -22,9 +22,10 @@ def assert_speed_parity_relative(pl_times, pt_times, max_diff: float = 0.1):
 
 def assert_speed_parity_absolute(pl_times, pt_times, nb_epochs, max_diff: float = 0.6):
     # assert speeds
-    diffs = np.asarray(pl_times) - np.asarray(pt_times)
-    # norm by vanila time
-    diffs = diffs / nb_epochs
+    diffs = (np.asarray(pl_times) - np.asarray(pt_times)) / nb_epochs
+    # todo
+    print(f'pt_times: {pt_times}')
+    print(f'pl_times: {pl_times}')
     assert np.alltrue(diffs < max_diff), \
         f"lightning {diffs} was slower than PT (threshold {max_diff})"
 
