@@ -102,7 +102,7 @@ jobs:
       - image: circleci/python:3.7
     environment:
       - PYTHON_VER: << parameters.python >>
-      - MAX_CHECKS: 240
+      - MAX_CHECKS: 360
       - CHECK_SPEEP: 5
     steps:
       - checkout
