@@ -1,5 +1,7 @@
 import torch
 from torch import nn
+from torch.utils.data import DistributedSampler
+
 from pytorch_lightning import Trainer, seed_everything
 from pytorch_lightning.core.lightning import LightningModule
 from torch_geometric.data import DataLoader
@@ -120,13 +122,16 @@ def main():
     print(dataset[0])
     out_dim = dataset.num_classes
     in_dim = dataset.num_node_features + 2
+    num_gpus = 2
+    trainer = Trainer(gpus=num_gpus, max_epochs=100, distributed_backend="ddp", replace_sampler_ddp=False)
 
-    train_loader = DataLoader(dataset, batch_size=128,pin_memory=True,num_workers=8)
+    sampler = DistributedSampler(dataset, num_replicas=num_gpus, rank=trainer.global_rank)
+    train_loader = DataLoader(dataset, batch_size=128,pin_memory=True,num_workers=8, sampler=sampler)
     #print(train_loader.collate_fn)
 
     model = GCN(20,out_dim,0.0,True,True,True,in_dim,2,"mean")
 
-    trainer = Trainer(gpus=2,max_epochs=100,distributed_backend="ddp", replace_sampler_ddp=True)
+
     #trainer = Trainer(gpus=1,max_epochs=5)
     trainer.fit(model, train_loader)
 
