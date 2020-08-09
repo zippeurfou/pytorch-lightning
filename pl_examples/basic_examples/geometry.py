@@ -122,6 +122,7 @@ def main():
     in_dim = dataset.num_node_features + 2
 
     train_loader = DataLoader(dataset, batch_size=128,pin_memory=True,num_workers=8)
+    #print(train_loader.collate_fn)
 
     model = GCN(20,out_dim,0.0,True,True,True,in_dim,2,"mean")
 

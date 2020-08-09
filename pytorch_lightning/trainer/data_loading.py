@@ -159,7 +159,9 @@ class TrainerDataLoadingMixin(ABC):
         }
 
         dl_args['sampler'] = sampler
+        print(dataloader.__dict__)
         dataloader = type(dataloader)(**dl_args)
+        print(dataloader.__dict__)
         return dataloader
 
     def _get_distributed_sampler(self, dataloader, train):
