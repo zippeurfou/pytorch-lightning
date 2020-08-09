@@ -20,6 +20,8 @@ class BasicGNNClassifyModel(LightningModule):
         pass
 
     def training_step(self, batch, batch_idx):
+        print(type(batch))
+        print(batch.device)
         batch_targets = batch.y
         y_hat = self(batch)
         loss = self.loss(y_hat, batch_targets)
