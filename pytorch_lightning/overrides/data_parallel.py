@@ -72,6 +72,8 @@ class LightningDataParallel(DataParallel):
             outputs = self.__gather_structured_result(outputs)
         else:
             outputs = self.gather(outputs)
+
+        print('Lightning DP')
         return outputs
 
     def __gather_structured_result(self, outputs):
