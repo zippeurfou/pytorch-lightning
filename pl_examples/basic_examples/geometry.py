@@ -126,7 +126,7 @@ def main():
     out_dim = dataset.num_classes
     in_dim = dataset.num_node_features + 2
     num_gpus = 1
-    trainer = Trainer(gpus=num_gpus, max_epochs=100, distributed_backend="ddp", replace_sampler_ddp=(num_gpus == 1))
+    trainer = Trainer(gpus=num_gpus, max_epochs=100, replace_sampler_ddp=(num_gpus == 1))
 
     sampler = DistributedSampler(dataset, num_replicas=num_gpus, rank=trainer.global_rank)
     train_loader = DataLoader(dataset, batch_size=128,pin_memory=True,num_workers=8, ) #sampler=sampler)
