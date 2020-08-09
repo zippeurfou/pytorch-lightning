@@ -1,4 +1,4 @@
-import torch as th
+import torch
 from torch import nn
 from pytorch_lightning import Trainer, seed_everything
 from pytorch_lightning.core.lightning import LightningModule
