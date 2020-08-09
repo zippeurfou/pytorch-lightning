@@ -21,7 +21,8 @@ class BasicGNNClassifyModel(LightningModule):
 
     def training_step(self, batch, batch_idx):
         print(type(batch))
-        print(batch.device)
+        print(batch.y.device)
+        # print(batch.device)
         batch_targets = batch.y
         y_hat = self(batch)
         loss = self.loss(y_hat, batch_targets)
@@ -124,11 +125,11 @@ def main():
     print(dataset[0])
     out_dim = dataset.num_classes
     in_dim = dataset.num_node_features + 2
-    num_gpus = 2
-    trainer = Trainer(gpus=num_gpus, max_epochs=100, distributed_backend="ddp", replace_sampler_ddp=False)
+    num_gpus = 1
+    trainer = Trainer(gpus=num_gpus, max_epochs=100, distributed_backend="ddp", replace_sampler_ddp=(num_gpus == 1))
 
     sampler = DistributedSampler(dataset, num_replicas=num_gpus, rank=trainer.global_rank)
-    train_loader = DataLoader(dataset, batch_size=128,pin_memory=True,num_workers=8, sampler=sampler)
+    train_loader = DataLoader(dataset, batch_size=128,pin_memory=True,num_workers=8, ) #sampler=sampler)
     #print(train_loader.collate_fn)
 
     model = GCN(20,out_dim,0.0,True,True,True,in_dim,2,"mean")
