@@ -46,6 +46,7 @@ class LightningDataParallel(DataParallel):
     """
 
     def forward(self, *inputs, **kwargs):
+        print('Lightning DP')
         if not self.device_ids:
             return self.module(*inputs, **kwargs)
 
