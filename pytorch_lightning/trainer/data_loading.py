@@ -160,8 +160,10 @@ class TrainerDataLoadingMixin(ABC):
 
         dl_args['sampler'] = sampler
         print(dataloader.__dict__)
+        print(dl_args)
+        print(dl_args['collate_fn'])
         dataloader = type(dataloader)(**dl_args)
-        print(dataloader.__dict__)
+        #print(dataloader.__dict__)
         return dataloader
 
     def _get_distributed_sampler(self, dataloader, train):

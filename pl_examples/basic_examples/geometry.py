@@ -126,7 +126,7 @@ def main():
 
     model = GCN(20,out_dim,0.0,True,True,True,in_dim,2,"mean")
 
-    trainer = Trainer(gpus=2,max_epochs=100,distributed_backend="ddp")
+    trainer = Trainer(gpus=2,max_epochs=100,distributed_backend="ddp", replace_sampler_ddp=True)
     #trainer = Trainer(gpus=1,max_epochs=5)
     trainer.fit(model, train_loader)
 
