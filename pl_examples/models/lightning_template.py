@@ -9,8 +9,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.transforms as transforms
 from torch import optim
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, DistributedSampler
 from torchvision.datasets import MNIST
+from typing import Optional
 
 from pytorch_lightning.core import LightningModule
 
@@ -144,7 +145,9 @@ class LightningTemplateModel(LightningModule):
         self.mnist_test = MNIST(self.hparams.data_root, train=False, download=False, transform=transform)
 
     def train_dataloader(self):
-        return DataLoader(self.mnist_train, batch_size=self.hparams.batch_size, num_workers=self.hparams.num_workers)
+        dataset = self.mnist_train
+        sampler = DistributedSamplerWrapper(dataset)
+        return DataLoader(dataset, batch_size=self.hparams.batch_size, num_workers=self.hparams.num_workers, sampler=sampler)
 
     def val_dataloader(self):
         return DataLoader(self.mnist_test, batch_size=self.hparams.batch_size, num_workers=self.hparams.num_workers)
@@ -178,3 +181,25 @@ class LightningTemplateModel(LightningModule):
         parser.add_argument('--batch_size', default=64, type=int)
         parser.add_argument('--learning_rate', default=0.001, type=float)
         return parser
+
+
+from torch.utils.data.sampler import Sampler
+
+
+class DistributedSamplerWrapper(DistributedSampler):
+    def __init__(
+            self, dataset,
+            num_replicas: Optional[int] = None,
+            rank: Optional[int] = None,
+            shuffle: bool = True):
+        super(DistributedSamplerWrapper, self).__init__(
+            dataset, num_replicas, rank, shuffle)
+        self.sampler = Sampler
+
+    def __iter__(self):
+        indices = list(self.sampler)
+        indices = indices[self.rank:self.total_size:self.num_replicas]
+        return iter(indices)
+
+    def __len__(self):
+        return len(self.sampler)
