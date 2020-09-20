@@ -183,7 +183,7 @@ class LightningTemplateModel(LightningModule):
         return parser
 
 
-from torch.utils.data.sampler import Sampler
+from torch.utils.data.sampler import Sampler, SequentialSampler
 
 
 class DistributedSamplerWrapper(DistributedSampler):
@@ -194,7 +194,7 @@ class DistributedSamplerWrapper(DistributedSampler):
             shuffle: bool = True):
         super(DistributedSamplerWrapper, self).__init__(
             dataset, num_replicas, rank, shuffle)
-        self.sampler = Sampler
+        self.sampler = SequentialSampler(dataset)
 
     def __iter__(self):
         indices = list(self.sampler)
