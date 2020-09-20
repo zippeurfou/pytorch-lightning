@@ -141,6 +141,10 @@ def test_model_checkpoint_format_checkpoint_name(tmpdir):
     filepath = tmpdir / 'dir'
     ckpt_name = ModelCheckpoint(filepath=filepath).format_checkpoint_name(3, {})
     assert ckpt_name == filepath / 'epoch=3.ckpt'
+    # dir with trailing /
+    filepath = tmpdir / 'dir'
+    ckpt_name = ModelCheckpoint(filepath=str(filepath + "/")).format_checkpoint_name(3, {})
+    assert ckpt_name == filepath / 'epoch=3.ckpt'
     # dir with prefix
     ckpt_name = ModelCheckpoint(filepath=filepath, prefix='test').format_checkpoint_name(3, {})
     assert ckpt_name == filepath / 'test-epoch=3.ckpt'
