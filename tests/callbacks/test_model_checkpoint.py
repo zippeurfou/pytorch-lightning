@@ -201,7 +201,7 @@ def test_ckpt_metric_names(tmpdir):
         progress_bar_refresh_rate=0,
         limit_train_batches=0.01,
         limit_val_batches=0.01,
-        checkpoint_callback=ModelCheckpoint(filepath=tmpdir + "/{val_loss:.2f}"),
+        checkpoint_callback=ModelCheckpoint(filepath=tmpdir + "/{val_loss:.2f}.ckpt"),
     )
 
     trainer.fit(model)
@@ -232,7 +232,7 @@ def test_ckpt_metric_names_results(tmpdir):
         progress_bar_refresh_rate=0,
         limit_train_batches=0.01,
         limit_val_batches=0.01,
-        checkpoint_callback=ModelCheckpoint(filepath=tmpdir + "/{val_loss:.2f}"),
+        checkpoint_callback=ModelCheckpoint(filepath=tmpdir + "/{val_loss:.2f}.ckpt"),
     )
 
     trainer.fit(model)

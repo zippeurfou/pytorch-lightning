@@ -40,7 +40,7 @@ class ModelCheckpoint(Callback):
     best checkpoint file and :attr:`best_model_score` to retrieve its score.
 
     Args:
-        filepath: path to save the model file.
+        filepath: path to folder or file to which checkpoint gets saved.
             Can contain named formatting options to be auto-filled.
 
             Example::
@@ -52,7 +52,7 @@ class ModelCheckpoint(Callback):
                 # save any arbitrary metrics like `val_loss`, etc. in name
                 # saves a file like: my/path/epoch=2-val_loss=0.02-other_metric=0.03.ckpt
                 >>> checkpoint_callback = ModelCheckpoint(
-                ...     filepath='my/path/{epoch}-{val_loss:.2f}-{other_metric:.2f}'
+                ...     filepath='my/path/{epoch}-{val_loss:.2f}-{other_metric:.2f}.ckpt'
                 ... )
 
             By default, filepath is `None` and will be set at runtime to the location
@@ -142,6 +142,7 @@ class ModelCheckpoint(Callback):
 
         self.monitor = monitor
         self.verbose = verbose
+        self.ext = ".ckpt"
         if not filepath:  # will be determined by trainer at runtime
             self.dirpath, self.filename = None, None
         else:
@@ -151,6 +152,7 @@ class ModelCheckpoint(Callback):
             else:
                 if self._fs.protocol == "file":  # dont normalize remote paths
                     filepath = os.path.realpath(filepath)
+                filepath, self.ext = os.path.splitext(filepath)
                 self.dirpath, self.filename = os.path.split(filepath)
             self._fs.makedirs(self.dirpath, exist_ok=True)
         self.save_last = save_last
@@ -252,29 +254,25 @@ class ModelCheckpoint(Callback):
         Example::
 
             >>> tmpdir = os.path.dirname(__file__)
-            >>> ckpt = ModelCheckpoint(os.path.join(tmpdir, '{epoch}'))
+            >>> ckpt = ModelCheckpoint(os.path.join(tmpdir, '{epoch}.ckpt'))
             >>> os.path.basename(ckpt.format_checkpoint_name(0, {}))
             'epoch=0.ckpt'
-            >>> ckpt = ModelCheckpoint(os.path.join(tmpdir, '{epoch:03d}'))
+            >>> ckpt = ModelCheckpoint(os.path.join(tmpdir, '{epoch:03d}.ckpt'))
             >>> os.path.basename(ckpt.format_checkpoint_name(5, {}))
             'epoch=005.ckpt'
-            >>> ckpt = ModelCheckpoint(os.path.join(tmpdir, '{epoch}-{val_loss:.2f}'))
+            >>> ckpt = ModelCheckpoint(os.path.join(tmpdir, '{epoch}-{val_loss:.2f}.ckpt'))
             >>> os.path.basename(ckpt.format_checkpoint_name(2, dict(val_loss=0.123456)))
             'epoch=2-val_loss=0.12.ckpt'
-            >>> ckpt = ModelCheckpoint(os.path.join(tmpdir, '{missing:d}'))
+            >>> ckpt = ModelCheckpoint(os.path.join(tmpdir, '{missing:d}.ckpt'))
             >>> os.path.basename(ckpt.format_checkpoint_name(0, {}))
             'missing=0.ckpt'
         """
         filename = self._format_checkpoint_name(
             self.filename, epoch, metrics, prefix=self.prefix
         )
-        print(filename)
-        name, ext = os.path.splitext(filename)
-        ext = ext or ".ckpt"
-        print(name, ext)
         if ver is not None:
-            name = self.CHECKPOINT_JOIN_CHAR.join((name, f"v{ver}"))
-        ckpt_name = os.path.join(name, ext)
+            filename = self.CHECKPOINT_JOIN_CHAR.join((filename, f"v{ver}"))
+        ckpt_name = filename + self.ext
         return os.path.join(self.dirpath, ckpt_name) if self.dirpath else ckpt_name
 
     @rank_zero_only
