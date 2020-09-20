@@ -98,7 +98,7 @@ class ModelCheckpoint(Callback):
         # save epoch and val_loss in name
         # saves a file like: my/path/sample-mnist-epoch=02-val_loss=0.32.ckpt
         >>> checkpoint_callback = ModelCheckpoint(
-        ...     filepath='my/path/sample-mnist-{epoch:02d}-{val_loss:.2f}'
+        ...     filepath='my/path/sample-mnist-{epoch:02d}-{val_loss:.2f}.ckpt'
         ... )
 
         # retrieve the best checkpoint after training
@@ -145,7 +145,8 @@ class ModelCheckpoint(Callback):
         if not filepath:  # will be determined by trainer at runtime
             self.dirpath, self.filename = None, None
         else:
-            if self._fs.isdir(filepath):
+            is_dir = not os.path.splitext(filepath)[1]
+            if is_dir:
                 self.dirpath, self.filename = filepath, None
             else:
                 if self._fs.protocol == "file":  # dont normalize remote paths
@@ -267,9 +268,13 @@ class ModelCheckpoint(Callback):
         filename = self._format_checkpoint_name(
             self.filename, epoch, metrics, prefix=self.prefix
         )
+        print(filename)
+        name, ext = os.path.splitext(filename)
+        ext = ext or ".ckpt"
+        print(name, ext)
         if ver is not None:
-            filename = self.CHECKPOINT_JOIN_CHAR.join((filename, f"v{ver}"))
-        ckpt_name = f"{filename}.ckpt"
+            name = self.CHECKPOINT_JOIN_CHAR.join((name, f"v{ver}"))
+        ckpt_name = os.path.join(name, ext)
         return os.path.join(self.dirpath, ckpt_name) if self.dirpath else ckpt_name
 
     @rank_zero_only

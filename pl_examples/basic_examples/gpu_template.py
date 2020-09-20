@@ -6,6 +6,7 @@ from argparse import ArgumentParser
 
 from pl_examples.models.lightning_template import LightningTemplateModel
 from pytorch_lightning import Trainer, seed_everything
+from pytorch_lightning.callbacks import ModelCheckpoint
 
 seed_everything(234)
 
@@ -20,7 +21,8 @@ def main(args):
     # ------------------------
     # 2 INIT TRAINER
     # ------------------------
-    trainer = Trainer.from_argparse_args(args)
+    checkpoint_callback = ModelCheckpoint('./my/path/')
+    trainer = Trainer.from_argparse_args(args, checkpoint_callback=checkpoint_callback, limit_train_batches=3)
 
     # ------------------------
     # 3 START TRAINING
@@ -39,7 +41,7 @@ def run_cli():
     # each LightningModule defines arguments relevant to it
     parser = LightningTemplateModel.add_model_specific_args(parent_parser, root_dir)
     parser = Trainer.add_argparse_args(parser)
-    parser.set_defaults(gpus=2)
+    parser.set_defaults(gpus=1)
     args = parser.parse_args()
 
     # ---------------------

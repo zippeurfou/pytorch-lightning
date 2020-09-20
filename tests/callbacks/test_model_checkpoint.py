@@ -137,16 +137,16 @@ def test_model_checkpoint_format_checkpoint_name(tmpdir):
     # CWD
     ckpt_name = ModelCheckpoint(filepath='.').format_checkpoint_name(3, {})
     assert Path(ckpt_name) == Path('.') / 'epoch=3.ckpt'
-    # dir does not exist so it is used as filename
+    # non-existing dir
     filepath = tmpdir / 'dir'
-    ckpt_name = ModelCheckpoint(filepath=filepath, prefix='test').format_checkpoint_name(3, {})
-    assert ckpt_name == tmpdir / 'test-dir.ckpt'
-    # now, dir exists
-    os.mkdir(filepath)
+    ckpt_name = ModelCheckpoint(filepath=filepath).format_checkpoint_name(3, {})
+    assert ckpt_name == filepath / 'epoch=3.ckpt'
+    # dir with prefix
     ckpt_name = ModelCheckpoint(filepath=filepath, prefix='test').format_checkpoint_name(3, {})
     assert ckpt_name == filepath / 'test-epoch=3.ckpt'
-    # with ver
-    ckpt_name = ModelCheckpoint(filepath=tmpdir / 'name', prefix='test').format_checkpoint_name(3, {}, ver=3)
+    # filename with ver
+    filepath = tmpdir / 'name.ckpt'
+    ckpt_name = ModelCheckpoint(filepath=filepath, prefix='test').format_checkpoint_name(3, {}, ver=3)
     assert ckpt_name == tmpdir / 'test-name-v3.ckpt'
 
 
