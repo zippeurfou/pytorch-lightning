@@ -13,6 +13,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 
 from pytorch_lightning.core import LightningModule
+from pytorch_lightning.metrics.functional import confusion_matrix
 
 
 class LightningTemplateModel(LightningModule):
@@ -96,7 +97,7 @@ class LightningTemplateModel(LightningModule):
         val_loss = F.cross_entropy(y_hat, y)
         labels_hat = torch.argmax(y_hat, dim=1)
         n_correct_pred = torch.sum(y == labels_hat).item()
-        return {'val_loss': val_loss, "n_correct_pred": n_correct_pred, "n_pred": len(x)}
+        return {'val_loss': val_loss, "n_correct_pred": n_correct_pred, "n_pred": len(x), "labels": labels_hat, "y": y}
 
     def test_step(self, batch, batch_idx):
         x, y = batch
@@ -114,6 +115,10 @@ class LightningTemplateModel(LightningModule):
         avg_loss = torch.stack([x['val_loss'] for x in outputs]).mean()
         val_acc = sum([x['n_correct_pred'] for x in outputs]) / sum(x['n_pred'] for x in outputs)
         tensorboard_logs = {'val_loss': avg_loss, 'val_acc': val_acc}
+
+        y = torch.stack([x['y'] for x in outputs]).view(-1)
+        y_hat = torch.stack([x['labels'] for x in outputs]).view(-1)
+        confusion = confusion_matrix(y, y_hat)
         return {'val_loss': avg_loss, 'log': tensorboard_logs}
 
     def test_epoch_end(self, outputs):

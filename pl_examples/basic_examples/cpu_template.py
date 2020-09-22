@@ -20,7 +20,7 @@ def main(args):
     # ------------------------
     # 2 INIT TRAINER
     # ------------------------
-    trainer = Trainer.from_argparse_args(args)
+    trainer = Trainer.from_argparse_args(args, limit_val_batches=3, limit_train_batches=2)
 
     # ------------------------
     # 3 START TRAINING
