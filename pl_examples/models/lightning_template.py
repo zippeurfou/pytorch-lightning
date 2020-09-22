@@ -119,7 +119,7 @@ class LightningTemplateModel(LightningModule):
         y = torch.stack([x['y'] for x in outputs]).view(-1)
         y_hat = torch.stack([x['labels'] for x in outputs]).view(-1)
         confusion = confusion_matrix(y, y_hat)
-        return {'val_loss': avg_loss, 'log': tensorboard_logs}
+        return {'val_loss': avg_loss, 'log': tensorboard_logs, "progress_bar": {"val_loss": avg_loss}}
 
     def test_epoch_end(self, outputs):
         avg_loss = torch.stack([x['test_loss'] for x in outputs]).mean()
