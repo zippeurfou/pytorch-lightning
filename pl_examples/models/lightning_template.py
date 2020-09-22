@@ -13,6 +13,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 
 from pytorch_lightning.core import LightningModule
+from pytorch_lightning.metrics import ConfusionMatrix
 from pytorch_lightning.metrics.functional import confusion_matrix
 
 
@@ -62,6 +63,7 @@ class LightningTemplateModel(LightningModule):
                               out_features=self.hparams.out_features)
 
         self.example_input_array = torch.zeros(2, 1, 28, 28)
+        self.confusion_matrix = ConfusionMatrix(10)
 
     def forward(self, x):
         """
@@ -118,7 +120,7 @@ class LightningTemplateModel(LightningModule):
 
         y = torch.stack([x['y'] for x in outputs]).view(-1)
         y_hat = torch.stack([x['labels'] for x in outputs]).view(-1)
-        confusion = confusion_matrix(y, y_hat)
+        confusion = self.confusion_matrix(y, y_hat)
         return {'val_loss': avg_loss, 'log': tensorboard_logs, "progress_bar": {"val_loss": avg_loss}}
 
     def test_epoch_end(self, outputs):
