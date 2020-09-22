@@ -26,6 +26,7 @@ def main(args):
     # 3 START TRAINING
     # ------------------------
     trainer.fit(model)
+    trainer.test(model)
 
 
 def run_cli():
