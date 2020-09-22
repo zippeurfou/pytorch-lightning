@@ -6,6 +6,7 @@ from argparse import ArgumentParser
 
 from pl_examples.models.lightning_template import LightningTemplateModel
 from pytorch_lightning import Trainer, seed_everything
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 
 seed_everything(234)
 
@@ -16,6 +17,26 @@ def main(args):
     # 1 INIT LIGHTNING MODEL
     # ------------------------
     model = LightningTemplateModel(**vars(args))
+    ctr = 0
+    path = os.path.join(os.getcwd(), 'runs/lightning_logs/version_' + str(ctr) + '/checkpoints/')
+    checkpoint_callback = ModelCheckpoint(
+        save_top_k=1,
+        filepath=path,
+        verbose=True,
+        monitor='val_loss',
+        mode='min')
+
+    early_stop_callback = EarlyStopping(
+        monitor='val_loss',
+        min_delta=0.00,
+        patience=3,
+        verbose=False,
+        mode='min')
+
+    trainer = Trainer(gpus=4, progress_bar_refresh_rate=0, max_epochs=10,
+                         checkpoint_callback=checkpoint_callback,
+                         distributed_backend="ddp")  # , distributed_backend="ddp"
+    trainer.fit(model)
 
     # ------------------------
     # 2 INIT TRAINER
