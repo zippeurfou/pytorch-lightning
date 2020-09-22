@@ -18,7 +18,7 @@ def main(args):
     # ------------------------
     model = LightningTemplateModel(**vars(args))
     ctr = 0
-    path = os.path.join(os.getcwd(), 'runs/lightning_logs/version_' + str(ctr) + '/checkpoints/')
+    path = os.path.join(os.getcwd(), 'runs/lightning_logs/version_' + str(ctr) + '/checkpoints/epoch={epoch}')
     checkpoint_callback = ModelCheckpoint(
         save_top_k=1,
         filepath=path,
