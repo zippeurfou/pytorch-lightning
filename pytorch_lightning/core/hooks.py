@@ -547,6 +547,8 @@ class DataHooks:
             will have an argument ``dataloader_idx`` which matches the order here.
         """
 
+
+class DataDeviceHooks:
     def transfer_batch_to_device(self, batch: Any, device: torch.device) -> Any:
         """
         Override this hook if your :class:`~torch.utils.data.DataLoader` returns tensors
@@ -596,3 +598,15 @@ class DataHooks:
             - :func:`~pytorch_lightning.utilities.apply_func.apply_to_collection`
         """
         return move_data_to_device(batch, device)
+
+    def before_batch_transfer(self, batch):
+        return batch
+
+    def after_batch_transfer(self, batch):
+        return batch
+
+    def prepare_batch_for_transfer(self, batch, device):
+        batch = self.before_batch_transfer(batch)
+        batch = self.transfer_batch_to_device(batch, device)
+        batch = self.after_batch_transfer(batch)
+        return batch
