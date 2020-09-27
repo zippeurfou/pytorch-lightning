@@ -75,9 +75,7 @@ class GPUBackend(Accelerator):
         return output
 
     def to_device(self, batch):
-        gpu_id = 0
-        if isinstance(self.trainer.data_parallel_device_ids, list):
-            gpu_id = self.trainer.data_parallel_device_ids[0]
+        gpu_id = self.trainer.data_parallel_device_ids[0]
 
         # Don't copy the batch since there is a single gpu that the batch could
         # be referenced from and if there are multiple optimizers the batch will
