@@ -55,51 +55,23 @@ class GPUBackend(Accelerator):
         return results
 
     def training_step(self, args):
-        if self.trainer.amp_backend == AMPType.NATIVE:
-            with torch.cuda.amp.autocast():
-                output = self.__training_step(args)
-        else:
-            output = self.__training_step(args)
-
-        return output
-
-    def __training_step(self, args):
-        batch = args[0]
-        batch = self.to_device(batch)
-        args[0] = batch
-        output = self.trainer.model.training_step(*args)
-        return output
+        return self.__step(args, 'training_step')
 
     def validation_step(self, args):
-        if self.trainer.amp_backend == AMPType.NATIVE:
-            with torch.cuda.amp.autocast():
-                output = self.__validation_step(args)
-        else:
-            output = self.__validation_step(args)
-
-        return output
-
-    def __validation_step(self, args):
-        batch = args[0]
-        batch = self.to_device(batch)
-        args[0] = batch
-        output = self.trainer.model.validation_step(*args)
-        return output
+        return self.__step(args, 'validation_step')
 
     def test_step(self, args):
+        return self.__step(args, 'test_step')
+
+    def __step(self, args, step_func):
+        args[0] = self.to_device(args[0])
+
         if self.trainer.amp_backend == AMPType.NATIVE:
             with torch.cuda.amp.autocast():
-                output = self.__test_step(args)
+                output = getattr(self.trainer.model, step_func)(*args)
         else:
-            output = self.__test_step(args)
+            output = getattr(self.trainer.model, step_func)(*args)
 
-        return output
-
-    def __test_step(self, args):
-        batch = args[0]
-        batch = self.to_device(batch)
-        args[0] = batch
-        output = self.trainer.model.test_step(*args)
         return output
 
     def to_device(self, batch):
