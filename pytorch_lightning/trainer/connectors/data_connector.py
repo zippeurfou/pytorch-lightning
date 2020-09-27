@@ -120,6 +120,9 @@ class DataConnector(object):
             # Override transfer_batch_to_device if dataset-specific to_device logic has been defined in datamodule
             model.prepare_batch_for_transfer = datamodule.prepare_batch_for_transfer
 
+            # TODO remove this after all the changes are done
+            model.transfer_batch_to_device = datamodule.transfer_batch_to_device
+
             self.trainer.datamodule = datamodule
 
 
