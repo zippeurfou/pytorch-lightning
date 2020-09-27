@@ -146,7 +146,7 @@ class TestTubeLogger(LightningLoggerBase):
             if input_array is not None:
                 self.experiment.add_graph(
                     model,
-                    model.transfer_batch_to_device(
+                    model.prepare_batch_for_transfer(
                         model.example_input_array, model.device)
                 )
             else:
