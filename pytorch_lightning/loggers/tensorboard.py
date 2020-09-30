@@ -231,6 +231,7 @@ class TensorBoardLogger(LightningLoggerBase):
     def version(self) -> int:
         if self._version is None:
             self._version = self._get_next_version()
+        print('new version', self._version)
         return self._version
 
     def _get_next_version(self):
@@ -249,6 +250,8 @@ class TensorBoardLogger(LightningLoggerBase):
         if len(existing_versions) == 0:
             return 0
 
+
+        print("existing:", existing_versions)
         return max(existing_versions) + 1
 
     def __getstate__(self):
