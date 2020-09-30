@@ -398,6 +398,9 @@ class ModelCheckpoint(Callback):
                 if isinstance(trainer.logger.version, str)
                 else f"version_{trainer.logger.version}"
             )
+            print("savedir",  trainer.logger.save_dir, trainer.global_rank)
+            print('version', version, trainer.global_rank)
+            print('name', trainer.logger.name, trainer.global_rank)
             ckpt_path = os.path.join(
                 save_dir, trainer.logger.name, version, "checkpoints"
             )
