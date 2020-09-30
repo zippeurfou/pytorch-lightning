@@ -532,6 +532,9 @@ class ModelCheckpoint(Callback):
         self.best_model_path = _op(self.best_k_models, key=self.best_k_models.get)
         self.best_model_score = self.best_k_models[self.best_model_path]
 
+
+        print(trainer.global_rank, self.best_model_path)
+
         if self.verbose:
             rank_zero_info(
                 f"Epoch {epoch:d}: {self.monitor} reached"
