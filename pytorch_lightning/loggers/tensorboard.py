@@ -229,6 +229,8 @@ class TensorBoardLogger(LightningLoggerBase):
 
     @property
     def version(self) -> int:
+        if torch.distributed.is_initialized():
+            torch.distributed.barrier()
         if self._version is None:
             self._version = self._get_next_version()
         print('new version', self._version)
