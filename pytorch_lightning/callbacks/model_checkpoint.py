@@ -478,6 +478,8 @@ class ModelCheckpoint(Callback):
         if self.monitor is None:
             self.best_model_path = self.last_model_path
 
+        print(trainer.global_rank, self.best_model_path)
+
     def _save_top_k_checkpoints(self, metrics, trainer, pl_module, epoch, filepath):
         current = metrics.get(self.monitor)
 
