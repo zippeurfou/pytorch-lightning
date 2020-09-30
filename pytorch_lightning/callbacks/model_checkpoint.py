@@ -385,6 +385,9 @@ class ModelCheckpoint(Callback):
 
         self.filename = None
 
+        if torch.distributed.is_initialized():
+            torch.distributed.barrier()
+
         if trainer.logger is not None:
             if trainer.weights_save_path != trainer.default_root_dir:
                 # the user has changed weights_save_path, it overrides anything
