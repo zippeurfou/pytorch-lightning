@@ -406,6 +406,8 @@ class ModelCheckpoint(Callback):
         else:
             ckpt_path = os.path.join(trainer.weights_save_path, "checkpoints")
 
+        if torch.distributed.is_initialized():
+            torch.distributed.barrier()
         self.dirpath = ckpt_path
 
     def _add_backward_monitor_support(self, trainer):
