@@ -437,7 +437,8 @@ early_stop_callback
 Callback for early stopping.
 early_stop_callback (:class:`pytorch_lightning.callbacks.EarlyStopping`)
 
-.. deprecated:
+.. warning:: .. deprecated:: 0.10.0
+
     Deprecated since v0.10.0 and will be removed in v1.0. Configure the EarlyStopping callback class
     and add it to the list of callbacks: ``Trainer(callbacks=[EarlyStopping(...)])``
 
