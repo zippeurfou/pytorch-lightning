@@ -129,7 +129,6 @@ def test_model_checkpoint_no_extraneous_invocations(tmpdir):
         distributed_backend="ddp_cpu",
         num_processes=2,
         default_root_dir=tmpdir,
-        early_stop_callback=False,
         checkpoint_callback=model_checkpoint,
         max_epochs=num_epochs,
     )
@@ -185,7 +184,6 @@ def test_model_checkpoint_save_last(tmpdir):
     model_checkpoint = ModelCheckpoint(monitor='early_stop_on', filepath=tmpdir, save_top_k=-1, save_last=True)
     trainer = Trainer(
         default_root_dir=tmpdir,
-        early_stop_callback=False,
         checkpoint_callback=model_checkpoint,
         max_epochs=epochs,
         logger=False,
@@ -237,7 +235,6 @@ def test_model_checkpoint_none_monitor(tmpdir):
     checkpoint_callback = ModelCheckpoint(monitor=None, filepath=tmpdir, save_top_k=-1)
     trainer = Trainer(
         default_root_dir=tmpdir,
-        early_stop_callback=False,
         checkpoint_callback=checkpoint_callback,
         max_epochs=epochs,
         logger=False,
@@ -263,7 +260,6 @@ def test_model_checkpoint_period(tmpdir, period):
     checkpoint_callback = ModelCheckpoint(filepath=tmpdir, save_top_k=-1, period=period)
     trainer = Trainer(
         default_root_dir=tmpdir,
-        early_stop_callback=False,
         checkpoint_callback=checkpoint_callback,
         max_epochs=epochs,
         limit_train_batches=0.1,
@@ -283,7 +279,6 @@ def test_model_checkpoint_topk_zero(tmpdir):
     checkpoint_callback = ModelCheckpoint(filepath=tmpdir, save_top_k=0)
     trainer = Trainer(
         default_root_dir=tmpdir,
-        early_stop_callback=False,
         checkpoint_callback=checkpoint_callback,
         max_epochs=2,
         logger=False,
@@ -307,7 +302,6 @@ def test_model_checkpoint_topk_all(tmpdir):
     checkpoint_callback = ModelCheckpoint(filepath=tmpdir, monitor="early_stop_on", save_top_k=-1)
     trainer = Trainer(
         default_root_dir=tmpdir,
-        early_stop_callback=False,
         checkpoint_callback=checkpoint_callback,
         max_epochs=epochs,
         logger=False,
@@ -430,7 +424,6 @@ def test_model_checkpoint_save_last_checkpoint_contents(tmpdir):
     )
     trainer = Trainer(
         default_root_dir=tmpdir,
-        early_stop_callback=False,
         checkpoint_callback=model_checkpoint,
         max_epochs=num_epochs,
     )
