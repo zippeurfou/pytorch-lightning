@@ -922,7 +922,7 @@ This is the pseudocode to describe how all the hooks are called during a call to
     def train_on_device(model):
         # setup is called PER DEVICE
         setup()
-        configure_optimizers()
+        configure_optimizers
         on_pretrain_routine_start()
 
         for epoch in epochs:

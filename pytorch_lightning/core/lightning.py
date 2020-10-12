@@ -67,6 +67,7 @@ class LightningModule(
         "on_gpu",
         "current_epoch",
         "global_step",
+        "optimizers",
     ] + DeviceDtypeModuleMixin.__jit_unused_properties__
 
     def __init__(self, *args, **kwargs):
@@ -1059,7 +1060,7 @@ class LightningModule(
         Example::
 
             def training_step(...):
-                (opt_a, opt_b) = self.optimizers()
+                (opt_a, opt_b) = self.optimizers
                 loss = ...
                 # automatically applies scaling, etc...
                 self.manual_backward(loss, opt_a)

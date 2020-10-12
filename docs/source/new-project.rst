@@ -699,7 +699,7 @@ Now you own the train loop!
 .. code-block:: python
 
     def training_step(self, batch, batch_idx, opt_idx):
-        (opt_a, opt_b, opt_c) = self.optimizers()
+        (opt_a, opt_b, opt_c) = self.optimizers
 
         loss_a = self.generator(batch[0])
 
