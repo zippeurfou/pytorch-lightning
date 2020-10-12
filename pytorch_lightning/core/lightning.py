@@ -112,7 +112,7 @@ class LightningModule(
         self._current_fx_name = ''
 
     @property
-    def optimizers(self):
+    def optimizers(self) -> Union[Optimizer, List[Optimizer]]:
         opts = self.trainer.optimizers
 
         # single optimizer
