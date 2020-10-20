@@ -141,6 +141,7 @@ def _sanitize_gpu_ids(gpus: List[int]) -> List[int]:
             misconfig = True
 
     if misconfig:
+        print("MISCONFIG", all_available_gpus, len(gpus))
         # sometimes auto ddp might have different flags
         # but this is not what the user intended
         # correct for the user
