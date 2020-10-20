@@ -119,8 +119,8 @@ class DDPAccelerator(Accelerator):
         for local_rank in range(1, self.trainer.num_processes):
             env_copy = os.environ.copy()
             env_copy['LOCAL_RANK'] = f'{local_rank}'
-            env_copy['PL_DDP_PID'] = str(self.trainer.data_parallel_device_ids[local_rank])
-            print("pl id", env_copy["PL_DDP_PID"], " assigned to local rank", local_rank)
+            env_copy['PL_DDP_PID'] = local_rank
+            print("pl id", env_copy["PL_DDP_PID"], " assigned to local rank", local_rank, self.trainer.data_parallel_device_ids)
             # remove env var if global seed not set
             if os.environ.get('PL_GLOBAL_SEED') is None and 'PL_GLOBAL_SEED' in env_copy:
                 del env_copy['PL_GLOBAL_SEED']
