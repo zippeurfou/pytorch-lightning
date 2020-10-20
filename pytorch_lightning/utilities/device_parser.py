@@ -66,14 +66,20 @@ def parse_gpu_ids(gpus: Optional[Union[int, str, List[int]]]) -> Optional[List[i
     if gpus is None or isinstance(gpus, int) and gpus == 0:
         return None
 
+    print("inp", gpus)
+
     # We know user requested GPUs therefore if some of the
     # requested GPUs are not available an exception is thrown.
 
     gpus = _normalize_parse_gpu_string_input(gpus)
+    print("normalized", gpus)
     gpus = _normalize_parse_gpu_input_to_list(gpus)
+    print("to list", gpus)
     if not gpus:
         raise MisconfigurationException("GPUs requested but none are available.")
     gpus = _sanitize_gpu_ids(gpus)
+
+    print("sanitized", gpus)
 
     return gpus
 
