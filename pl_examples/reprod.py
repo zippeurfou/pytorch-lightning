@@ -67,6 +67,6 @@ if __name__ == "__main__":
 
     trainer = pl.Trainer.from_argparse_args(
         args,
-        max_epochs=1,
+        max_epochs=10,
     )
     trainer.fit(model, train, val)
