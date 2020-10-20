@@ -139,7 +139,7 @@ class DDPAccelerator(Accelerator):
             delay = np.random.uniform(1, 5, 1)[0]
             sleep(delay)
 
-        os.environ['PL_DDP_PID'] = str(0)
+        os.environ['PL_DDP_PID'] = str(self.trainer.data_parallel_device_ids[0])
 
     def train(self):
         model = self.trainer.model
