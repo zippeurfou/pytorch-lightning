@@ -182,7 +182,7 @@ class DDPAccelerator(Accelerator):
 
     def model_to_device(self, model, process_idx):
         self.trainer.root_gpu = process_idx
-        print(process_idx, self.trainer.root_gpu)
+        print(process_idx, self.trainer.root_gpu, torch.cuda.device_count())
         torch.cuda.set_device(self.trainer.root_gpu)
         model.cuda(self.trainer.root_gpu)
 
