@@ -63,7 +63,7 @@ class DDPAccelerator(Accelerator):
             self._call_children_scripts()
 
         # set the task idx
-        self.task_idx = int(os.environ['PL_DDP_PID'])
+        self.task_idx = int(os.environ['LOCAL_RANK'])
 
     def _call_children_scripts(self):
         assert self.trainer.global_rank == 0
