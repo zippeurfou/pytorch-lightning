@@ -119,7 +119,7 @@ class DDPAccelerator(Accelerator):
         for local_rank in range(1, self.trainer.num_processes):
             env_copy = os.environ.copy()
             env_copy['LOCAL_RANK'] = f'{local_rank}'
-            env_copy['PL_DDP_PID'] = str(self.trainer.data_parallel_device_ids[local_rank])
+            # env_copy['PL_DDP_PID'] = str(self.trainer.data_parallel_device_ids[local_rank])
             # env_copy.pop('CUDA_VISIBLE_DEVICES', None)
             print("pl id", env_copy["PL_DDP_PID"], " assigned to local rank", local_rank, self.trainer.data_parallel_device_ids)
             # remove env var if global seed not set
@@ -141,7 +141,7 @@ class DDPAccelerator(Accelerator):
             sleep(delay)
 
         # os.environ['PL_DDP_PID'] = str(self.trainer.data_parallel_device_ids[0])
-        os.environ['PL_DDP_PID'] = '0'
+        # os.environ['PL_DDP_PID'] = '0'
 
     def train(self):
         model = self.trainer.model
