@@ -107,21 +107,14 @@ class DDPAccelerator(Accelerator):
         if self.trainer.logger is not None:
             os.environ['PL_EXP_VERSION'] = str(self.trainer.logger.version)
 
-        # gpu_ids = os.environ.get('CUDA_VISIBLE_DEVICES', '')
-        # if len(gpu_ids) == 1:
-        #     gpu_ids = f'{gpu_ids},'
-
-        num_gpus = len(self.trainer.data_parallel_device_ids) # max(1, len(gpu_ids.split(',')))
-
+        num_gpus = len(self.trainer.data_parallel_device_ids)
         os.environ['WORLD_SIZE'] = f'{num_gpus * self.trainer.num_nodes}'
 
         self.interactive_ddp_procs = []
         for local_rank in range(1, self.trainer.num_processes):
             env_copy = os.environ.copy()
             env_copy['LOCAL_RANK'] = f'{local_rank}'
-            # env_copy['PL_DDP_PID'] = str(self.trainer.data_parallel_device_ids[local_rank])
-            # env_copy.pop('CUDA_VISIBLE_DEVICES', None)
-            print("pl id", env_copy["PL_DDP_PID"], " assigned to local rank", local_rank, self.trainer.data_parallel_device_ids)
+
             # remove env var if global seed not set
             if os.environ.get('PL_GLOBAL_SEED') is None and 'PL_GLOBAL_SEED' in env_copy:
                 del env_copy['PL_GLOBAL_SEED']
