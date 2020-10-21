@@ -382,7 +382,7 @@ class AcceleratorConnector:
                 # os.environ["CUDA_VISIBLE_DEVICES"] = gpu_str
 
         # don't make this debug... this is good UX
-        devices = os.environ["CUDA_VISIBLE_DEVICES"]
+        devices = os.environ.get("CUDA_VISIBLE_DEVICES", list(range(torch.cuda.device_count())))
         log.info(f'LOCAL_RANK: {self.trainer.local_rank} - CUDA_VISIBLE_DEVICES: [{devices}]')
 
     def determine_local_rank(self):

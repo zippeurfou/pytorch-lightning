@@ -107,11 +107,11 @@ class DDPAccelerator(Accelerator):
         if self.trainer.logger is not None:
             os.environ['PL_EXP_VERSION'] = str(self.trainer.logger.version)
 
-        gpu_ids = os.environ.get('CUDA_VISIBLE_DEVICES', '')
-        if len(gpu_ids) == 1:
-            gpu_ids = f'{gpu_ids},'
+        # gpu_ids = os.environ.get('CUDA_VISIBLE_DEVICES', '')
+        # if len(gpu_ids) == 1:
+        #     gpu_ids = f'{gpu_ids},'
 
-        num_gpus = max(1, len(gpu_ids.split(',')))
+        num_gpus = len(self.trainer.data_parallel_device_ids) # max(1, len(gpu_ids.split(',')))
 
         os.environ['WORLD_SIZE'] = f'{num_gpus * self.trainer.num_nodes}'
 
