@@ -114,9 +114,7 @@ class DDPAccelerator(Accelerator):
         for local_rank in range(1, self.trainer.num_processes):
             env_copy = os.environ.copy()
             env_copy['LOCAL_RANK'] = f'{local_rank}'
-            # env_copy['PL_DDP_PID'] = str(self.trainer.data_parallel_device_ids[local_rank])
-            # env_copy.pop('CUDA_VISIBLE_DEVICES', None)
-            # print("pl id", env_copy["PL_DDP_PID"], " assigned to local rank", local_rank, self.trainer.data_parallel_device_ids)
+
             # remove env var if global seed not set
             if os.environ.get('PL_GLOBAL_SEED') is None and 'PL_GLOBAL_SEED' in env_copy:
                 del env_copy['PL_GLOBAL_SEED']
@@ -134,9 +132,6 @@ class DDPAccelerator(Accelerator):
             # with dataloaders delay between 1-10 seconds
             delay = np.random.uniform(1, 5, 1)[0]
             sleep(delay)
-
-        # os.environ['PL_DDP_PID'] = str(self.trainer.data_parallel_device_ids[0])
-        # os.environ['PL_DDP_PID'] = '0'
 
     def train(self):
         model = self.trainer.model
@@ -180,7 +175,6 @@ class DDPAccelerator(Accelerator):
 
     def model_to_device(self, model, process_idx):
         self.trainer.root_gpu = self.trainer.data_parallel_device_ids[self.trainer.local_rank]
-        print(process_idx, self.trainer.root_gpu, torch.cuda.device_count(), os.environ.get("CUDA_VISIBLE_DEVICES", "none"))
         torch.cuda.set_device(self.trainer.root_gpu)
         model.cuda(self.trainer.root_gpu)
 
