@@ -206,7 +206,7 @@ class AcceleratorConnector:
 
         # ddp script mode uses the same flags as TE
         # TODO: decouple from TE
-        if os.environ.get('PL_DDP_PID', False):
+        if os.environ.get('PL_IN_DDP_SUBPROCESS', False):
             use_torchelastic_ddp = False
 
         cluster_env = self._select_environment()
