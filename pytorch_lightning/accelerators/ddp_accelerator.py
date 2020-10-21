@@ -184,7 +184,7 @@ class DDPAccelerator(Accelerator):
         self.trainer.world_size = self.trainer.num_nodes * self.trainer.num_processes
 
     def model_to_device(self, model, process_idx):
-        self.trainer.root_gpu = process_idx
+        self.trainer.root_gpu = self.trainer.data_parallel_device_ids[self.trainer.local_rank]
         print(process_idx, self.trainer.root_gpu, torch.cuda.device_count(), os.environ.get("CUDA_VISIBLE_DEVICES", "none"))
         torch.cuda.set_device(self.trainer.root_gpu)
         model.cuda(self.trainer.root_gpu)
