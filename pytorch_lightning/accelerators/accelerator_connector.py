@@ -376,10 +376,10 @@ class AcceleratorConnector:
         if not is_slurm_managing_tasks and 'CUDA_VISIBLE_DEVICES' not in os.environ:
             if isinstance(data_parallel_device_ids, int):
                 id_str = ','.join(str(x) for x in list(range(data_parallel_device_ids)))
-                os.environ["CUDA_VISIBLE_DEVICES"] = id_str
+                # os.environ["CUDA_VISIBLE_DEVICES"] = id_str
             else:
                 gpu_str = ','.join([str(x) for x in data_parallel_device_ids])
-                os.environ["CUDA_VISIBLE_DEVICES"] = gpu_str
+                # os.environ["CUDA_VISIBLE_DEVICES"] = gpu_str
 
         # don't make this debug... this is good UX
         devices = os.environ["CUDA_VISIBLE_DEVICES"]
