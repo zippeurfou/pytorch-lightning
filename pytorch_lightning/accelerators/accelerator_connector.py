@@ -109,7 +109,6 @@ class AcceleratorConnector:
             self.trainer.gpus = self.trainer.tuner.pick_multiple_gpus(gpus)
 
         self.trainer.data_parallel_device_ids = device_parser.parse_gpu_ids(self.trainer.gpus)
-        print("parallel device ids", self.trainer.data_parallel_device_ids)
         self.trainer.root_gpu = device_parser.determine_root_gpu_device(self.trainer.data_parallel_device_ids)
         self.trainer.root_device = torch.device("cpu")
 
