@@ -145,13 +145,13 @@ def _sanitize_gpu_ids(gpus: List[int]) -> List[int]:
         # sometimes auto ddp might have different flags
         # but this is not what the user intended
         # correct for the user
-        if len(gpus) == len(all_available_gpus):
-            gpus = all_available_gpus
-        else:
-            raise MisconfigurationException(f"""
-                You requested GPUs: {gpus}
-                But your machine only has: {all_available_gpus}
-            """)
+        # if len(gpus) == len(all_available_gpus):
+        #     gpus = all_available_gpus
+        # else:
+        raise MisconfigurationException(f"""
+            You requested GPUs: {gpus}
+            But your machine only has: {all_available_gpus}
+        """)
     return gpus
 
 
