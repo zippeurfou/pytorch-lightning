@@ -110,6 +110,7 @@ class AcceleratorConnector:
 
         self.trainer.data_parallel_device_ids = device_parser.parse_gpu_ids(self.trainer.gpus)
         self.trainer.root_gpu = device_parser.determine_root_gpu_device(self.trainer.data_parallel_device_ids)
+        print(self.trainer.root_gpu, "root gpu", self.trainer.global_rank)
         self.trainer.root_device = torch.device("cpu")
 
         self.trainer.on_gpu = True if (self.trainer.data_parallel_device_ids and torch.cuda.is_available()) else False
