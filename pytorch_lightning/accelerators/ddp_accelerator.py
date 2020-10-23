@@ -174,6 +174,14 @@ class DDPAccelerator(Accelerator):
 
     def model_to_device(self, model, process_idx):
         self.trainer.root_gpu = self.trainer.data_parallel_device_ids[self.trainer.local_rank]
+        from pprint import pprint
+        pprint({
+            "rank": self.trainer.global_rank,
+            "local Rank": self.trainer.local_rank,
+            "GPU IDS": self.trainer.data_parallel_device_ids,
+            "task_id": self.task_idx,
+            "visible devices": os.environ.get("CUDA_VISIBLE_DEVICES", None)
+        })
         torch.cuda.set_device(self.trainer.root_gpu)
         model.cuda(self.trainer.root_gpu)
 
