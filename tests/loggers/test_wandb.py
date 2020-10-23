@@ -15,6 +15,7 @@ import os
 import pickle
 from unittest import mock
 
+from argparse import ArgumentParser
 from pytorch_lightning import Trainer
 from pytorch_lightning.loggers import WandbLogger
 from tests.base import EvalModelTemplate
@@ -109,3 +110,29 @@ def test_wandb_logger_dirs_creation(wandb, tmpdir):
 
     assert trainer.checkpoint_callback.dirpath == str(tmpdir / 'project' / version / 'checkpoints')
     assert set(os.listdir(trainer.checkpoint_callback.dirpath)) == {'epoch=0.ckpt'}
+
+
+def test_tpu_cores_serializable(tmpdir):
+
+    parser = ArgumentParser()
+    parser = Trainer.add_argparse_args(parent_parser=parser)
+    args = parser.parse_args()
+    pprint(vars(args))
+    wandb_logger = WandbLogger()
+    wandb_logger.log_hyperparams(vars(args))
+
+    class TestModel(BoringModel):
+        def on_train_epoch_start(self) -> None:
+            pass
+
+    # model
+    model = TestModel()
+    trainer = Trainer(
+        default_root_dir=tmpdir,
+        limit_train_batches=1,
+        limit_val_batches=1,
+        max_epochs=1,
+        weights_summary=None,
+    )
+    trainer.fit(model)
+    trainer.test(model)
