@@ -289,6 +289,8 @@ class AcceleratorConnector:
                 f'Trainer(distributed_backend={self.trainer.distributed_backend} is not a supported backend'
             )
 
+        print(accelerator_backend, "backend")
+
         return accelerator_backend
 
     def set_distributed_mode(self):
