@@ -174,14 +174,7 @@ class DDPAccelerator(Accelerator):
 
     def model_to_device(self, model, process_idx):
         self.trainer.root_gpu = self.trainer.data_parallel_device_ids[self.trainer.local_rank]
-        from pprint import pprint
-        pprint({
-            "rank": self.trainer.global_rank,
-            "local Rank": self.trainer.local_rank,
-            "GPU IDS": self.trainer.data_parallel_device_ids,
-            "task_id": self.task_idx,
-            "visible devices": os.environ.get("CUDA_VISIBLE_DEVICES", None)
-        })
+
         torch.cuda.set_device(self.trainer.root_gpu)
         model.cuda(self.trainer.root_gpu)
 
@@ -228,6 +221,15 @@ class DDPAccelerator(Accelerator):
 
         # set warning rank
         rank_zero_only.rank = self.trainer.global_rank
+
+        from pprint import pprint
+        pprint({
+            "rank": self.trainer.global_rank,
+            "local Rank": self.trainer.local_rank,
+            "GPU IDS": self.trainer.data_parallel_device_ids,
+            "task_id": self.task_idx,
+            "visible devices": os.environ.get("CUDA_VISIBLE_DEVICES", None)
+        })
 
         # set up server using proc 0's ip address
         # try to init for 20 times at max in case ports are taken
