@@ -19,6 +19,8 @@ import pytorch_lightning as pl
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, random_split
 
+from pytorch_lightning.loggers import WandbLogger
+
 try:
     from torchvision.datasets.mnist import MNIST
     from torchvision import transforms
@@ -54,14 +56,14 @@ class LitClassifier(pl.LightningModule):
         x, y = batch
         y_hat = self.backbone(x)
         loss = F.cross_entropy(y_hat, y)
-        self.log('train_loss', loss, on_epoch=True)
+        self.log('train_loss', loss)
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self.backbone(x)
         loss = F.cross_entropy(y_hat, y)
-        self.log('valid_loss', loss, on_step=True)
+        self.log('valid_loss', loss)
 
     def test_step(self, batch, batch_idx):
         x, y = batch
@@ -109,16 +111,18 @@ def cli_main():
     # ------------
     model = LitClassifier(Backbone(hidden_dim=args.hidden_dim), args.learning_rate)
 
+    logger = WandbLogger(project="test", name="test")
+
     # ------------
     # training
     # ------------
-    trainer = pl.Trainer.from_argparse_args(args)
+    trainer = pl.Trainer.from_argparse_args(args, max_steps=1, limit_train_batches=2, logger=logger)
     trainer.fit(model, train_loader, val_loader)
 
     # ------------
     # testing
     # ------------
-    result = trainer.test(test_dataloaders=test_loader)
+    result = trainer.test(model, test_dataloaders=test_loader)
     print(result)
 
 
