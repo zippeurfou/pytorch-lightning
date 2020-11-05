@@ -22,7 +22,7 @@ import torch.multiprocessing as mp
 from pytorch_lightning import _logger as log
 from pytorch_lightning.accelerators.accelerator import Accelerator
 from pytorch_lightning.core import LightningModule
-from pytorch_lightning.utilities import rank_zero_info, rank_zero_only, rank_zero_warn
+from pytorch_lightning.utilities import rank_zero_info, rank_zero_only, rank_zero_warn, move_data_to_device
 from pytorch_lightning.utilities.cloud_io import atomic_save
 from pytorch_lightning.utilities.exceptions import MisconfigurationException
 from pytorch_lightning.utilities.xla_device_utils import XLADeviceUtils
@@ -320,7 +320,8 @@ class TPUAccelerator(Accelerator):
             last_path = None
             if not self.trainer.testing and best_model_path is not None and len(best_model_path) > 0:
                 last_path = re.sub('.ckpt', '.tmp_end.ckpt', best_model_path)
-                atomic_save(model.state_dict(), last_path)
+                state_dict = move_data_to_device(model.state_dict(), torch.device("cpu"))
+                atomic_save(state_dict, last_path)
             mp_queue.put(last_path)
 
     def broadcast(self, obj, src=0):
@@ -332,3 +333,11 @@ class TPUAccelerator(Accelerator):
         buffer = io.BytesIO(data.cpu().byte().numpy())
         obj = torch.load(buffer)
         return obj
+
+    def on_save(self, checkpoint):
+        """
+        Move XLA tensors to CPU before saving
+        Recommended on XLA Guide:
+        https://github.com/pytorch/xla/blob/master/API_GUIDE.md#saving-and-loading-xla-tensors
+        """
+        return move_data_to_device(checkpoint, torch.device("cpu"))
