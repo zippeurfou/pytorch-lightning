@@ -161,9 +161,12 @@ class NeptuneLogger(LightningLoggerBase):
         experiment_name: Optional. Editable name of the experiment.
             Name is displayed in the experiment’s Details (Metadata section) and
             in experiments view as a column.
+        prefix: A string to put at the beginning of metric keys.
         \**kwargs: Additional arguments like `params`, `tags`, `properties`, etc. used by
             :func:`neptune.Session.create_experiment` can be passed as keyword arguments in this logger.
     """
+
+    LOGGER_JOIN_CHAR = '-'
 
     def __init__(
         self,
@@ -172,6 +175,7 @@ class NeptuneLogger(LightningLoggerBase):
         close_after_fit: Optional[bool] = True,
         offline_mode: bool = False,
         experiment_name: Optional[str] = None,
+        prefix: str = '',
         **kwargs
     ):
         if neptune is None:
@@ -183,6 +187,7 @@ class NeptuneLogger(LightningLoggerBase):
         self.offline_mode = offline_mode
         self.close_after_fit = close_after_fit
         self.experiment_name = experiment_name
+        self._prefix = prefix
         self._kwargs = kwargs
         self._experiment_id = None
         self._experiment = self._create_or_get_experiment()
@@ -240,6 +245,8 @@ class NeptuneLogger(LightningLoggerBase):
             step: Step number at which the metrics should be recorded, must be strictly increasing
         """
         assert rank_zero_only.rank == 0, 'experiment tried to log from global_rank != 0'
+
+        metrics = self._add_prefix(metrics, self._prefix, self.LOGGER_JOIN_CHAR)
         for key, val in metrics.items():
             self.log_metric(key, val, step=step)
 
