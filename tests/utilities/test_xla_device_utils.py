@@ -45,14 +45,3 @@ def test_xla_device_is_a_tpu():
     device = xm.xla_device()
     device_type = xm.xla_device_hw(device)
     return device_type == "TPU"
-
-
-def test_result_returns_within_10_seconds():
-    """Check that pl_multi_process returns within 10 seconds"""
-
-    start = time.time()
-    result = xla_utils.pl_multi_process(time.sleep)(25)
-    end = time.time()
-    elapsed_time = int(end - start)
-    assert elapsed_time <= 10
-    assert result is False

@@ -40,12 +40,7 @@ def pl_multi_process(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         queue = Queue()
-        xmp.spawn(inner_f,
-          args=(queue, func, *args),
-          nprocs=1,
-          join=True,
-          daemon=False,
-          start_method='fork')
+        xmp.spawn(inner_f, args=(queue, func, *args), nprocs=1, join=True, daemon=False, start_method="fork")
         return queue.get()
 
     return wrapper
